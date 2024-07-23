@@ -3,7 +3,7 @@ package searchengine.services;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import searchengine.dto.SitesList;
+import searchengine.config.SitesList;
 import searchengine.dto.DetailedStatisticsItem;
 import searchengine.dto.StatisticsData;
 import searchengine.dto.StatisticsResponse;
@@ -16,7 +16,6 @@ import searchengine.repository.SiteRepository;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Service
 @RequiredArgsConstructor
