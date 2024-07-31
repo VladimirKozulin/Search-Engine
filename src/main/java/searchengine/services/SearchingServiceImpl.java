@@ -67,23 +67,20 @@ public class SearchingServiceImpl implements SearchingService {
 
         String REGEX = "[а-яА-Я]+";
         Pattern pattern = Pattern.compile(REGEX);
-        Matcher matcher = pattern.matcher(pageText);   // получение matcher объекта
+        Matcher matcher = pattern.matcher(pageText);
         int curIndex = 0;
         boolean first = true;
         while (matcher.find()) {
-            /*Преобразуем слова на странице в леммы по одному*/
             String word = matcher.group();
             String lemma = lemmaFinder.getLemmaSet(word).stream().reduce("", String::concat);
             if (result.concat(word).length() > MAX_SNIPPED_LEN) {
                 break;
             }
-            /*Если слово на странице соответствует лемме поиска */
             if (queryLemmas.stream().anyMatch(q -> q.equals(lemma))) {
                 if (first) {
                     first = false;
                     curIndex = matcher.start();
                 }
-                /*пробел и знаки препинания до найденной леммы */
                 result = result.concat(pageText.substring(curIndex, matcher.start()))
                         .concat("<b>").concat(word).concat("</b>");
             } else {
@@ -140,7 +137,7 @@ public class SearchingServiceImpl implements SearchingService {
 
     private Response makeResponse(List<SearchingData> searchingDataList) {
 
-        if (searchingDataList.size() == 0) {
+        if (searchingDataList.isEmpty()) {
             return new Error("По вашему запросу нет результатов");
         }
         double maxRelevance = searchingDataList.stream()
@@ -162,7 +159,7 @@ public class SearchingServiceImpl implements SearchingService {
     @Override
     public Response search(String query, String url, int offset, int limit) {
         logger.info("Запрос: " + query + " сайт: " + url + " сдвиг: " + offset + " лимит: " + limit);
-        if (query.equals("")) {
+        if (query.isEmpty()) {
             return new Error("Задан пустой поисковый запрос");
         }
 
@@ -177,7 +174,6 @@ public class SearchingServiceImpl implements SearchingService {
                 .filter(s -> url == null || s.getUrl().equals(url))
                 .forEach(s -> {
             Site site = siteRepository.findFirstSiteByUrl(s.getUrl());
-//            logger.info(site.getName() + " " + site.getUrl());
             List<Lemma> lemmas = new ArrayList<>();
             queryLemmas.forEach(l -> {
                 lemmas.addAll(lemmaRepository.findLemmaByLemmaAndSite(l, site));

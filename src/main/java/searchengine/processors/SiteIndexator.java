@@ -37,7 +37,7 @@ public class SiteIndexator extends RecursiveAction {
 
     @Getter
     @Setter
-    private String pageUrl; //URL страницы сайта
+    private String pageUrl;
 
     @Getter
     @Setter
@@ -45,7 +45,7 @@ public class SiteIndexator extends RecursiveAction {
 
     @Getter
     @Setter
-    private HashMap<String, Lemma> lemmas; //Информация о леммах сайта
+    private HashMap<String, Lemma> lemmas;
 
     @Getter
     @Setter
@@ -62,8 +62,6 @@ public class SiteIndexator extends RecursiveAction {
 
     @Setter
     private IndexRepository indexRepository;
-
-//    private boolean isInterrupted = false;
 
     private Logger logger = Logger.getLogger(SiteIndexator.class.getName());
 
@@ -153,7 +151,7 @@ public class SiteIndexator extends RecursiveAction {
     }
 
     private void processPage(String url) throws InterruptedException {
-        List<SiteIndexator> pageIndexators = new ArrayList<>(); // список дочерних процессов
+        List<SiteIndexator> pageIndexators = new ArrayList<>();
         Document htmlDoc = getHtml(url);
         if (htmlDoc == null) {
             return;
@@ -207,7 +205,7 @@ public class SiteIndexator extends RecursiveAction {
                 lemmaRepository.saveAll(lemmas.values());
                 indexRepository.saveAll(indexes.stream().toList());
 
-                if (site.getStatus()==Status.INDEXING){ // Если статус сайта INDEXING, то меняем его на INDEXED
+                if (site.getStatus()==Status.INDEXING){
                     site.setStatus(Status.INDEXED);
                 }
                 saveSite();
@@ -215,7 +213,7 @@ public class SiteIndexator extends RecursiveAction {
             } else {
                 processPage(pageUrl);
             }
-        } catch (InterruptedException | CancellationException e) {// Сообщение об ошибке, что индексация прервана пользователем
+        } catch (InterruptedException | CancellationException e) {
             String errMessage = site.getUrl() + " - индексация прервана пользователем";
             site.setStatus(Status.FAILED);
             site.setLastError(errMessage);

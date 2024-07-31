@@ -6,11 +6,11 @@ import java.io.IOException;
 import java.util.*;
 
 public class LemmaFinder {
-    private final LuceneMorphology luceneMorphology; //Используется для морфологического анализа текста
-    private static final String WORD_TYPE_REGEX = "\\W\\w&&[^а-яА-Я\\s]"; //Регулярное выражение для ужаление нерусских символов в тексте
-    private static final String[] particlesNames = new String[]{"МЕЖД", "ПРЕДЛ", "СОЮЗ"}; //массив строк, который содержит названия частиц русского языка.
+    private final LuceneMorphology luceneMorphology;
+    private static final String WORD_TYPE_REGEX = "\\W\\w&&[^а-яА-Я\\s]";
+    private static final String[] particlesNames = new String[]{"МЕЖД", "ПРЕДЛ", "СОЮЗ"};
 
-    public static LemmaFinder getInstance() throws IOException { //Создаёт и возвращает экземпляр класса
+    public static LemmaFinder getInstance() throws IOException {
         LuceneMorphology morphology= new RussianLuceneMorphology();
         return new LemmaFinder(morphology);
     }
@@ -19,7 +19,7 @@ public class LemmaFinder {
         this.luceneMorphology = luceneMorphology;
     }
 
-    public Map<String, Integer> collectLemmas(String text) { //Разделяет текст на слова, находит все леммы и считает их количество
+    public Map<String, Integer> collectLemmas(String text) {
         String[] words = arrayContainsRussianWords(text);
         HashMap<String, Integer> lemmas = new HashMap<>();
 
@@ -45,7 +45,7 @@ public class LemmaFinder {
         return lemmas;
     }
 
-    public Set<String> getLemmaSet(String text) { //Собирает все уникальные леммы из текста и возвращает список
+    public Set<String> getLemmaSet(String text) {
         String[] textArray = arrayContainsRussianWords(text);
         Set<String> lemmaSet = new HashSet<>();
         for (String word : textArray) {
@@ -60,36 +60,32 @@ public class LemmaFinder {
         return lemmaSet;
     }
 
-    private boolean anyWordBaseBelongToParticle(List<String> wordBaseForms) { //Проверяет, является ли слово частьюцей русского языка
+    private boolean anyWordBaseBelongToParticle(List<String> wordBaseForms) {
         return wordBaseForms.stream()
                 .anyMatch(this::hasParticleProperty);
-    } //Если хотя бы одно слово в списке является частьюцей русского языка возвращает true, иначе - false.
-
-    private boolean hasParticleProperty(String wordBase) { //Проверяет, содержит ли строка частицу русского языка
+    }
+    private boolean hasParticleProperty(String wordBase) {
         for (String property : particlesNames) {
-            if (wordBase.toUpperCase() //Преобразуем слово в верхний регистр, чтобы избежать чувствительности к нему
-                    .contains(property)) {
+            if (wordBase.toUpperCase().contains(property)) {
                 return true;
             }
         }
-        return false; //Если слово содержит элемент массива(particlesNames), метод возвращает true, иначе - false
+        return false;
     }
 
-    private String[] arrayContainsRussianWords(String text) { //Разделяет текст на слова и удаляет нерусские символы
+    private String[] arrayContainsRussianWords(String text) {
         return text.toLowerCase(Locale.ROOT)
                 .replaceAll("([^а-я\\s])", " ")
                 .trim()
                 .split("\\s+");
-//Преобразуем в нижний регистр, меняем все нерусские символы на пробелы, удаляем пробелы в начале и конце и разделяем строку на массив строк по пробелам
     }
 
-    private boolean isCorrectWordForm(String word) { //Проверяет, является ли слово корректной формой слова
+    private boolean isCorrectWordForm(String word) {
         List<String> wordInfo = luceneMorphology.getMorphInfo(word);
         for (String morphInfo : wordInfo) {
             if (morphInfo.matches(WORD_TYPE_REGEX)) {
                 return false;
             }
-        } //Если морфологическая информация соответствует регулярному выражению, метод возвращает false, иначе - true
-        return true;
+        }        return true;
     }
 }
