@@ -12,7 +12,8 @@
 * Java 17
 * Lombok
 * Spring framework 
-* Hibernate 
+* Hibernate
+* Logback and slf4j  
 * MySQL 8
 * Lucene 
 * Jsoup 
