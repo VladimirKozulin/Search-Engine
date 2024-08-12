@@ -11,7 +11,7 @@
 ## Стек технологий
 * Java 17
 * Lombok
-* Spring framework 
+* Spring Boot 
 * Hibernate
 * Logback and slf4j  
 * MySQL 8
