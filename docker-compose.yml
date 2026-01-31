@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  tarantool:
+    build:
+      context: .
+      dockerfile: Dockerfile.tarantool
+    container_name: searchengine-tarantool
+    ports:
+      - "3301:3301"
+    volumes:
+      - tarantool-data:/var/lib/tarantool
+    restart: unless-stopped
+    environment:
+      - TZ=Europe/Moscow
+
+volumes:
+  tarantool-data:
+    driver: local

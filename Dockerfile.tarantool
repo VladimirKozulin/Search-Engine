@@ -1,0 +1,13 @@
+FROM tarantool/tarantool:2.11
+
+# Копируем скрипт инициализации
+COPY init.lua /opt/tarantool/init.lua
+
+# Устанавливаем рабочую директорию
+WORKDIR /opt/tarantool
+
+# Открываем порты
+EXPOSE 3301
+
+# Запускаем Tarantool с нашим скриптом
+CMD ["tarantool", "/opt/tarantool/init.lua"]
